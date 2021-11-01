@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Post, Put, Query, Res } from '@nestjs/common';
 import { CreateProductDto } from './dto/product.dto';
+import { BackResponse } from './interfaces/backresponse.interface';
+import { Product } from './interfaces/product.interface';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -19,9 +21,11 @@ export class ProductController {
     @Get()
     async getProducts(@Res() res){
         const products = await this.productService.getProducts();
-        return res.status(HttpStatus.OK).json({
-            products
-        })
+        const backresponse:BackResponse<Product[]> = {
+            status: 200,
+            data: products,
+        }
+        return res.status(HttpStatus.OK).json(backresponse);
     }
 
     @Get('/:productID')
